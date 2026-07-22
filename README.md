@@ -20,7 +20,7 @@
 - Rails 系と authentik は、AWS 上のサーバーに self-host する。
 - 費用優先なら Lightsail 4GB が第一候補。
 - EC2 を選ぶ場合は `t4g.medium` を基準にする。
-- 現行 `t4g` は ARM64 なので、Lightsail へ移す場合は Debian amd64 rootfs を作り直す。
+- Lightsail は安くて月額が読みやすい代わりに、EC2 より大規模拡張の自由度は低い。
 
 ## 注意
 
