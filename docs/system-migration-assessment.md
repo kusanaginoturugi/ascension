@@ -12,18 +12,21 @@
 
 参照対象は `~/src/osystem` 配下の全ファイル。主なリポジトリは以下。
 
-| 区分 | ディレクトリ | 現行/想定スタック | 現行 URL / 備考 |
-| --- | --- | --- | --- |
-| ポータル | `portal/`, `WisdomKing/` | 静的 HTML/JS | GitHub repo は `WisdomKing` |
-| 共通マスタ | `osystem-masters/` | Cloudflare Workers + D1 + Hono + authentik OIDC | `https://osystem-masters.kusanaginoturugi.workers.dev/` |
-| 毎日集計 | `dailytally2/` | Cloudflare Workers + D1 + Browser Rendering + cron + authentik OIDC | `https://dailytally.kusanaginoturugi.workers.dev/` |
-| 代理奉納 | `dedications/` | Rails 8.1 + Ruby 3.4.8 + SQLite + systemd | `https://dedications.showway.biz/` |
-| 超抜式 | `liberation/` | Rails 8.1 + Ruby 3.4.8 + SQLite | `https://liberation.showway.biz/` |
-| 道具販売 | `itementry/` | Rails 8.1 + Ruby 3.4.7 + SQLite | `https://itementry.showway.biz/` |
-| 道具一括注文 | `bulkpurchase/` | Rails 8.1 + Ruby 3.4.8 + SQLite + Solid Queue | `https://bulkpurchase.showway.biz/` |
-| テンキーレジ | `register/` | 静的 HTML + Python CLI | `https://register-xju.pages.dev/` |
-| 荷物番号 | `nimotsu-bango/` | 現状は静的検索ページ。README/親 README では Workers + D1 + OIDC 方針 | 実装状態と方針にズレあり |
-| 一括メール案 | `bulksend/` | まだ資料段階。Cloudflare Email Service + Workers 案 | GitHub 作成未完了 |
+この資料では、取得する新ドメインの例を `myouou.net` とする。実際には、空きがあれば別のドメイン名を選べる。
+
+| 区分 | ディレクトリ | 現行/想定スタック | 現行 URL / 備考 | 移行後 URL 案 |
+| --- | --- | --- | --- | --- |
+| ポータル | `portal/`, `WisdomKing/` | 静的 HTML/JS | GitHub repo は `WisdomKing` | `https://portal.myouou.net/` |
+| 共通マスタ | `osystem-masters/` | Cloudflare Workers + D1 + Hono + authentik OIDC | `https://osystem-masters.kusanaginoturugi.workers.dev/` | `https://masters.myouou.net/` |
+| 毎日集計 | `dailytally2/` | Cloudflare Workers + D1 + Browser Rendering + cron + authentik OIDC | `https://dailytally.kusanaginoturugi.workers.dev/` | `https://dailytally.myouou.net/` |
+| 代理奉納 | `dedications/` | Rails 8.1 + Ruby 3.4.8 + SQLite + systemd | `https://dedications.showway.biz/` | `https://dedications.myouou.net/` |
+| 超抜式 | `liberation/` | Rails 8.1 + Ruby 3.4.8 + SQLite | `https://liberation.showway.biz/` | `https://liberation.myouou.net/` |
+| 道具販売 | `itementry/` | Rails 8.1 + Ruby 3.4.7 + SQLite | `https://itementry.showway.biz/` | `https://itementry.myouou.net/` |
+| 道具一括注文 | `bulkpurchase/` | Rails 8.1 + Ruby 3.4.8 + SQLite + Solid Queue | `https://bulkpurchase.showway.biz/` | `https://bulkpurchase.myouou.net/` |
+| テンキーレジ | `register/` | 静的 HTML + Python CLI | `https://register-xju.pages.dev/` | `https://register.myouou.net/` |
+| 荷物番号 | `nimotsu-bango/` | 現状は静的検索ページ。README/親 README では Workers + D1 + OIDC 方針 | 実装状態と方針にズレあり | `https://nimotsu.myouou.net/` |
+| 認証 | authentik | self-host | `https://auth.showway.biz/` | `https://auth.myouou.net/` |
+| 一括メール案 | `bulksend/` | まだ資料段階。Cloudflare Email Service + Workers 案 | GitHub 作成未完了 | `https://bulksend.myouou.net/` |
 
 ## 現状から見える依存関係
 
@@ -150,7 +153,7 @@ authentik 自体は Cloudflare Workers には向かない。PostgreSQL/Redis/wor
 
 ## ドメイン設計案
 
-仮に `myouou.net` または同等の独自ドメインを取得する前提。
+仮に `myouou.net` または同等の独自ドメインを取得する前提。`myouou.net` は例であり、空きがあれば別のドメイン名を選べる。Cloudflare Registrar で取得できるドメインなら、そのまま Cloudflare DNS / Workers / Email Service と組み合わせやすい。
 
 | ホスト | 移行先 |
 | --- | --- |
