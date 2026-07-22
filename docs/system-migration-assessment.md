@@ -126,6 +126,7 @@ authentik 自体は Cloudflare Workers には向かない。PostgreSQL/Redis/wor
 - Cloudflare は案 A と同じ
 - AWS
   - Lightsail 4GB RAM プラン
+  - 2 vCPU、80GB SSD、4TB/月 転送量込み
   - Debian amd64
   - static IP
   - systemd-nspawn を継続
@@ -150,6 +151,30 @@ authentik 自体は Cloudflare Workers には向かない。PostgreSQL/Redis/wor
 - 現行 `t4g` ARM64 から amd64 Debian rootfs を作り直す分の移行作業が増える
 
 50名規模で単一サーバー運用なら、費用面では第一候補にできる。将来、本格的な冗長化やDB分離が必要になった時点で EC2 へ移す。
+
+Lightsail 単体でできる拡張:
+
+- 上位プランへ移す
+  - 4GB RAM / 2 vCPU / 80GB SSD から、8GB RAM / 2 vCPU / 160GB SSD などへ上げられる
+  - 手順は snapshot を取り、より大きいプランで新インスタンスを作る流れ
+  - そのため、厳密には「その場でCPU/メモリだけ変更」ではなく、作り直しに近い
+- ディスク容量を増やす
+  - 追加 block storage を attach できる
+  - SQLite、authentik DB、バックアップ置き場を追加ディスクへ逃がせる
+- 静的IPを付け替える
+  - 新しい Lightsail インスタンスへ static IP を付け替えれば、Cloudflare DNS 側の変更を小さくできる
+- snapshot から復旧する
+  - インスタンス snapshot を使って、同じ構成のサーバーを作り直せる
+  - ただし SQLite / PostgreSQL の整合性は、アプリ側の `.backup` や DB dump と組み合わせるほうが安全
+
+Lightsail 単体で弱い拡張:
+
+- 複数台に分けて自動負荷分散する構成
+- DB をマネージドサービスとして分離する構成
+- 細かい VPC / Security Group / IAM / AWS Backup 設計
+- 高度な監視、ログ集約、障害時の自動復旧
+
+今回の運用では、Rails アプリは大きく増やさず、軽い新規アプリは Cloudflare Workers に載せる前提。そのため、Lightsail は「既存 Rails 系 + authentik の常駐基盤」として使い、増える部分は Cloudflare 側に逃がせる。Lightsail 4GB で始め、足りなければ 8GB へ上げる、さらに本格的な分離が必要になったら EC2 へ移す、という段階的な判断でよい。
 
 ## ドメイン設計案
 
@@ -276,7 +301,7 @@ Lightsail 案は AWS 構築が少し軽くなる一方で、ARM64 から amd64 r
 | Cloudflare D1 | Free/Paid とも 5GB まで込み。Paid は 25B rows read/月、50M rows written/月込み。超過は read $0.001/M rows、write $1.00/M rows、storage $0.75/GB-month |
 | Cloudflare Registrar | 原価販売。TLD による。Cloudflare の公開ページでは “starting at $7.85” 表示あり |
 | EC2 t4g.medium | Rails 4 本 + authentik 同居の比較対象 |
-| Lightsail 4GB | 小規模サーバー向けの月額パック。今回の費用優先案 |
+| Lightsail 4GB | 小規模サーバー向けの月額パック。2 vCPU、80GB SSD、4TB/月 転送量込み。今回の費用優先案 |
 | EBS gp3 | us-east-1 例 $0.08/GB-month。50GB なら約 $4/月、100GB なら約 $8/月 |
 | Elastic IP | 実運用では課金対象になり得る。AWS の最新請求で確認 |
 | Snapshot/S3 backup | 容量次第。SQLite の現状規模なら当面小さいが、世代数で増える |
@@ -323,7 +348,7 @@ Lightsail 案は AWS 構築が少し軽くなる一方で、ARM64 から amd64 r
 
 ### AWS/Lightsail
 
-- Lightsail 4GB RAM プランを選ぶ
+- Lightsail 4GB RAM プランを選ぶ。2 vCPU、80GB SSD、4TB/月 転送量込み
 - Debian amd64 を選ぶ
 - static IP を割り当てる
 - systemd-nspawn をセットアップ
