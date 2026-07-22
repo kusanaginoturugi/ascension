@@ -18,7 +18,7 @@
 | --- | --- | --- | --- | --- |
 | ポータル | `portal/`, `WisdomKing/` | 静的 HTML/JS | GitHub repo は `WisdomKing` | `https://portal.myouou.net/` |
 | 共通マスタ | `osystem-masters/` | Cloudflare Workers + D1 + Hono + authentik OIDC | `https://osystem-masters.kusanaginoturugi.workers.dev/` | `https://masters.myouou.net/` |
-| 毎日集計 | `dailytally2/` | Cloudflare Workers + D1 + Browser Rendering + cron + authentik OIDC | `https://dailytally.kusanaginoturugi.workers.dev/` | `https://dailytally.myouou.net/` |
+| 毎日集計 | `dailytally2/` | Cloudflare Workers + D1 + Browser Rendering + cron + authentik OIDC | `https://dailytally2.kusanaginoturugi.workers.dev/` | `https://dailytally2.myouou.net/` |
 | 代理奉納 | `dedications/` | Rails 8.1 + Ruby 3.4.8 + SQLite + systemd | `https://dedications.showway.biz/` | `https://dedications.myouou.net/` |
 | 超抜式 | `liberation/` | Rails 8.1 + Ruby 3.4.8 + SQLite | `https://liberation.showway.biz/` | `https://liberation.myouou.net/` |
 | 道具販売 | `itementry/` | Rails 8.1 + Ruby 3.4.7 + SQLite | `https://itementry.showway.biz/` | `https://itementry.myouou.net/` |
@@ -159,7 +159,7 @@ authentik 自体は Cloudflare Workers には向かない。PostgreSQL/Redis/wor
 | --- | --- |
 | `portal.<domain>` | ポータル |
 | `masters.<domain>` | `osystem-masters` |
-| `dailytally.<domain>` | `dailytally2` |
+| `dailytally2.<domain>` | `dailytally2` |
 | `dedications.<domain>` | Rails / EC2 |
 | `liberation.<domain>` | Rails / EC2 |
 | `itementry.<domain>` | Rails / EC2 |
@@ -305,7 +305,7 @@ Lightsail 案は AWS 構築が少し軽くなる一方で、ARM64 から amd64 r
 - `dailytally2` D1 作成、migration、import
 - `wrangler.toml` の account-specific 値を差し替え
 - Secrets 再投入
-- `masters.<domain>`, `dailytally.<domain>` routes/custom domains 設定
+- `masters.<domain>`, `dailytally2.<domain>` routes/custom domains 設定
 - Browser Rendering binding 確認
 - cron trigger 確認
 - Observability/logs の保持方針決定
